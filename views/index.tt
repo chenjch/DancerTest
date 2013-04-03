@@ -1,0 +1,68 @@
+<script src="/javascripts/jquery.pagination.js" type="text/javascript" ></script>
+<script src="http://mottie.github.com/tablesorter/js/jquery.tablesorter.js" type="text/javascript"></script>
+<script src="http://mottie.github.com/tablesorter/js/jquery.tablesorter.widgets.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="http://d-scribe.de/webtools/jquery-pagination/lib/jquery_pagination/pagination.css" />
+<link rel="stylesheet" href="http://mottie.github.com/tablesorter/css/theme.dropbox.css" />
+
+<script type="text/javascript">
+    var page_index = 0;
+    var page_size = 10;
+    
+    var table_header = [ ['shop_id','店铺ID'], [ 'shop_name','店铺名称'], ['address','地址'], ['creation_date','创建时间'], ['contact_tel','联系电话']];
+    
+    var table_column_key = $.map(table_header, function(val){return val[0]});
+    
+    function table_pagination () {
+        show_pagination(0);
+		
+        function show_pagination(page_index, jq) {
+            
+            $.getJSON( '/users/' + page_index + '/' + page_size,
+            function(response_data) {
+                var row_array = new Array();
+				
+                var head_str = '<table id="pagination_table" class="tablesorter"><thead><tr><th>' + $.map(table_header, function(val){return val[1]}).join('</th><th>') + '</th></tr></thead>';
+				
+                var htmlspecialchars ={ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;"}
+                
+                $.each(response_data['data'], function(idx, item) {
+                    
+                    $.each(htmlspecialchars, function(k,v){
+                        item['shop_name'] = item['shop_name'].replace(k,v);
+                    });
+                    
+                    var str = $.map(table_column_key, function(val){return item[val]}).join('</td><td>');
+                    row_array.push(str);
+                });
+				
+                $("#table_content").html(head_str + '<tbody><tr><td>' + row_array.join('</td></tr><tr><td>') + '</td></tr></tbody></table>');
+                $("#pagination_table").tablesorter(
+                    {theme:'dropbox',
+                    sortList:[[0,0]],
+                    widgets: ["columns", "stickyHeaders", "zebra"],
+                    widthFixed:true
+                    }
+                );
+				
+                $("#pagination").pagination( response_data['item_num'], {
+                    callback: show_pagination,
+                    link_to: 'javascript:void(0);',
+                    prev_text: '上一页',       //上一页按钮里text  
+                    next_text: '下一页',       //下一页按钮里text  
+                    items_per_page: page_size,  //显示条数  
+                    num_display_entries: 6,    //连续分页主体部分分页条目数  
+                    current_page: page_index,   //当前页索引  
+                    num_edge_entries: 1        //两侧首尾分页条目数  
+                });
+            });
+            
+			return false;
+        }
+    }
+	
+	$(table_pagination());
+	
+</script>
+    <div id="table_content"></div>
+    <div id="pagination" class="pagination"></div>
