@@ -23,7 +23,7 @@ get '/user/:id' => sub {
 };
 
 get '/users' => sub {
-
+    
     template 'index', {};
 };
 

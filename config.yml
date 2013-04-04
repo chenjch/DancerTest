@@ -29,7 +29,7 @@ engines:
      EVAL_PERL: 1
      ANYCASE: 1
 
-session: Simple
+session: Storable
 
 plugins:
     Database:
