@@ -3,11 +3,10 @@
 <script src="http://mottie.github.com/tablesorter/js/jquery.tablesorter.widgets.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="http://d-scribe.de/webtools/jquery-pagination/lib/jquery_pagination/pagination.css" />
-<link rel="stylesheet" href="http://mottie.github.com/tablesorter/css/theme.dropbox.css" />
-
+<link rel="stylesheet" href="/css/theme.dropbox.css" />
 <script type="text/javascript">
     var page_index = 0;
-    var page_size = 10;
+    var page_size = 20;
     
     var table_header = [ ['shop_id','店铺ID'], [ 'shop_name','店铺名称'], ['address','地址'], ['creation_date','创建时间'], ['contact_tel','联系电话']];
     
@@ -32,16 +31,18 @@
                         item['shop_name'] = item['shop_name'].replace(k,v);
                     });
                     
-                    var str = $.map(table_column_key, function(val){return item[val]}).join('</td><td>');
+                    var str = $.map(table_column_key, function(val){ return item[val]}).join('</td><td>');
                     row_array.push(str);
                 });
 				
                 $("#table_content").html(head_str + '<tbody><tr><td>' + row_array.join('</td></tr><tr><td>') + '</td></tr></tbody></table>');
+				
                 $("#pagination_table").tablesorter(
                     {theme:'dropbox',
-                    sortList:[[0,0]],
-                    widgets: ["columns", "stickyHeaders", "zebra"],
-                    widthFixed:true
+                    sortList : [ [0,0] ],
+                    widgets: [ "columns", "stickyHeaders", "zebra"],
+                    widthFixed: true,
+					headerTemplate: '{content}{icon}',
                     }
                 );
 				
@@ -57,7 +58,7 @@
                 });
             });
             
-			return false;
+			return ture;
         }
     }
 	
